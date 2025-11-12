@@ -95,8 +95,8 @@ function initHeroVideo() {
     if (video) {
         // Set the video source explicitly
         video.innerHTML = `
-            <source src="images/videos/showcase.mp4" type="video/mp4">
-            <source src="images/videos/christmas-showcase.webm" type="video/webm">
+            <source src="videos/showcase.mp4" type="video/mp4">
+            <source src="videos/christmas-showcase.webm" type="video/webm">
             Your browser does not support the video tag.
         `;
         
