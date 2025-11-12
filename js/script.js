@@ -1,0 +1,154 @@
+// Snowfall Effect
+function createSnowflake() {
+    const snowflake = document.createElement('div');
+    snowflake.className = 'snowflake';
+    snowflake.textContent = '❄';
+    snowflake.style.left = Math.random() * 100 + 'vw';
+    snowflake.style.animationDuration = Math.random() * 5 + 5 + 's';
+    document.getElementById('snowfall').appendChild(snowflake);
+    setTimeout(() => snowflake.remove(), 10000);
+}
+setInterval(createSnowflake, 500);
+
+// Email Form Handler
+function handleSubmit(e) {
+    e.preventDefault();
+    const input = e.target.querySelector('.email-input');
+    const email = input.value;
+    
+    if (email) {
+        alert(`Thank you! We'll notify you at ${email} when we launch.`);
+        input.value = '';
+    }
+}
+
+// Carousel Items Dictionary
+const carouselItems = [
+    { "image": "Carousel/Male/1.png" },
+    { "image": "Carousel/Female/1.png" },
+    { "image": "Carousel/Male/2.png" },
+    { "image": "Carousel/Female/2.png" },
+    { "image": "Carousel/Male/3.png" },
+    { "image": "Carousel/Female/3.png" },
+    { "image": "Carousel/Male/4.png" },
+    { "image": "Carousel/Female/4.png" },
+    { "image": "Carousel/Male/5.png" },
+    { "image": "Carousel/Female/5.png" },
+    { "image": "Carousel/Male/6.png" },
+    { "image": "Carousel/Female/6.png" },
+    { "image": "Carousel/Male/7.png" },
+    { "image": "Carousel/Female/7.png" },
+    { "image": "Carousel/Male/8.png" },
+    { "image": "Carousel/Female/8.png" },
+    { "image": "Carousel/Male/9.png" },
+    { "image": "Carousel/Female/9.png" },
+    { "image": "Carousel/Male/10.png" },
+    { "image": "Carousel/Female/10.png" },
+    { "image": "Carousel/Male/11.png" },
+    { "image": "Carousel/Female/11.png" },
+    { "image": "Carousel/Male/12.png" },
+    { "image": "Carousel/Female/12.png" }
+,
+    // Add more items here as needed
+];
+
+// Function to create carousel items
+function createCarouselItems() {
+    const carouselTrack = document.getElementById('carouselTrack');
+    
+    // Clear existing content
+    carouselTrack.innerHTML = '';
+    
+    // Create items from dictionary (twice for seamless loop)
+    carouselItems.forEach(item => {
+        const carouselItem = document.createElement('div');
+        carouselItem.className = 'carousel-item';
+        
+        carouselItem.innerHTML = `
+            <img src="${item.image}" alt="Carousel Item">
+            <div class="image-overlay">
+                <span class="overlay-text">Coming Soon</span>
+            </div>
+        `;
+        
+        carouselTrack.appendChild(carouselItem);
+    });
+    
+    // Duplicate items for seamless loop
+    carouselItems.forEach(item => {
+        const carouselItem = document.createElement('div');
+        carouselItem.className = 'carousel-item';
+        
+        carouselItem.innerHTML = `
+            <img src="${item.image}" alt="Carousel Item">
+            <div class="image-overlay">
+                <span class="overlay-text">Coming Soon</span>
+            </div>
+        `;
+        
+        carouselTrack.appendChild(carouselItem);
+    });
+}
+
+// Initialize carousel when page loads
+document.addEventListener('DOMContentLoaded', createCarouselItems);
+
+// Video handling for hero section
+function initHeroVideo() {
+    const video = document.querySelector('.showcase-video');
+    
+    if (video) {
+        // Ensure video plays correctly on mobile
+        video.addEventListener('loadedmetadata', function() {
+            video.play().catch(function(error) {
+                console.log('Video autoplay failed:', error);
+            });
+        });
+        
+        // Fallback if video fails to load
+        video.addEventListener('error', function() {
+            console.log('Video failed to load, using fallback image');
+            const videoContainer = document.querySelector('.hero-video');
+            videoContainer.innerHTML = `
+                <div class="video-fallback" style="width:100%;height:100%;background:linear-gradient(45deg,#dc2626,#16a34a);display:flex;align-items:center;justify-content:center;color:white;font-size:1.2rem;border-radius:12px;">
+                    <div style="text-align:center;">
+                        <div style="font-size:3rem;margin-bottom:1rem;">🎄</div>
+                        Christmas Collection Coming Soon
+                    </div>
+                </div>
+            `;
+        });
+    }
+}
+
+// Update the DOMContentLoaded event listener
+document.addEventListener('DOMContentLoaded', function() {
+    createCarouselItems();
+    initHeroVideo();
+});
+
+// Simpler version with linear easing
+function smoothScrollToEmail() {
+    const emailSection = document.getElementById('notify');
+    if (!emailSection) return;
+    
+    const targetPosition = emailSection.getBoundingClientRect().top + window.pageYOffset;
+    const startPosition = window.pageYOffset;
+    const headerHeight = 100;
+    const distance = targetPosition - startPosition - headerHeight;
+    const duration = 500; // Adjust this value for speed
+    const startTime = performance.now();
+
+    function step(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        
+        window.scrollTo(0, startPosition + distance * progress);
+        
+        if (progress < 1) {
+            requestAnimationFrame(step);
+        }
+    }
+
+    requestAnimationFrame(step);
+}
