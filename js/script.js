@@ -22,7 +22,7 @@ function handleSubmit(e) {
     }
 }
 
-// Carousel Items Dictionary
+// Carousel Items Dictionary - UPDATED PATHS
 const carouselItems = [
     { "image": "images/carousel/male/1.png" },
     { "image": "images/carousel/female/1.png" },
@@ -47,8 +47,7 @@ const carouselItems = [
     { "image": "images/carousel/male/11.png" },
     { "image": "images/carousel/female/11.png" },
     { "image": "images/carousel/male/12.png" },
-    { "image": "images/carousel/female/12.png" },
-    // Add more items here as needed
+    { "image": "images/carousel/female/12.png" }
 ];
 
 // Function to create carousel items
@@ -64,7 +63,7 @@ function createCarouselItems() {
         carouselItem.className = 'carousel-item';
         
         carouselItem.innerHTML = `
-            <img src="${item.image}" alt="Carousel Item">
+            <img src="${item.image}" alt="Carousel Item" loading="lazy">
             <div class="image-overlay">
                 <span class="overlay-text">Coming Soon</span>
             </div>
@@ -79,7 +78,7 @@ function createCarouselItems() {
         carouselItem.className = 'carousel-item';
         
         carouselItem.innerHTML = `
-            <img src="${item.image}" alt="Carousel Item">
+            <img src="${item.image}" alt="Carousel Item" loading="lazy">
             <div class="image-overlay">
                 <span class="overlay-text">Coming Soon</span>
             </div>
@@ -89,14 +88,18 @@ function createCarouselItems() {
     });
 }
 
-// Initialize carousel when page loads
-document.addEventListener('DOMContentLoaded', createCarouselItems);
-
 // Video handling for hero section
 function initHeroVideo() {
     const video = document.querySelector('.showcase-video');
     
     if (video) {
+        // Set the video source explicitly
+        video.innerHTML = `
+            <source src="images/videos/showcase.mp4" type="video/mp4">
+            <source src="images/videos/christmas-showcase.webm" type="video/webm">
+            Your browser does not support the video tag.
+        `;
+        
         // Ensure video plays correctly on mobile
         video.addEventListener('loadedmetadata', function() {
             video.play().catch(function(error) {
@@ -117,6 +120,9 @@ function initHeroVideo() {
                 </div>
             `;
         });
+        
+        // Load the video
+        video.load();
     }
 }
 
@@ -126,7 +132,7 @@ document.addEventListener('DOMContentLoaded', function() {
     initHeroVideo();
 });
 
-// Simpler version with linear easing
+// Smooth scroll function
 function smoothScrollToEmail() {
     const emailSection = document.getElementById('notify');
     if (!emailSection) return;
@@ -135,7 +141,7 @@ function smoothScrollToEmail() {
     const startPosition = window.pageYOffset;
     const headerHeight = 100;
     const distance = targetPosition - startPosition - headerHeight;
-    const duration = 500; // Adjust this value for speed
+    const duration = 500;
     const startTime = performance.now();
 
     function step(currentTime) {
