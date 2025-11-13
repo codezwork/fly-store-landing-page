@@ -806,7 +806,6 @@ footer {
 /* Responsive */
 @media (max-width: 768px) {
     header {
-        flex-direction: column;
         gap: 1.5rem;
         padding: 1.5rem 5%;
     }
