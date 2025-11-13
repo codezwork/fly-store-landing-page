@@ -100,15 +100,61 @@
         <div class="email-signup-content">
             <h2>Join the Fly Club</h2>
             <p>Get early access, exclusive deals, and launch updates.</p>
-            <form class="email-form" onsubmit="handleSubmit(event)">
-                <input 
-                    type="email" 
-                    class="email-input" 
-                    placeholder="Your email address" 
-                    required
-                >
+            
+            <!-- Custom Form that submits to Google Forms -->
+            <form class="email-form" id="googleForm">
+                <div class="form-group">
+                    <input 
+                        type="text" 
+                        class="email-input" 
+                        placeholder="Your full name" 
+                        required
+                        name="entry.2096852819"  
+                        id="name"
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <input 
+                        type="email" 
+                        class="email-input" 
+                        placeholder="Your email address" 
+                        required
+                        name="entry.1537754694" 
+                        id="email"
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <input 
+                        type="tel" 
+                        class="email-input" 
+                        placeholder="Your contact number" 
+                        name="entry.768284395" 
+                        id="phone"
+                    >
+                </div>
+                
                 <button type="submit" class="cta-button">Notify Me</button>
             </form>
+            
+            <!-- Loading indicator -->
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Submitting...</p>
+            </div>
+            
+            <!-- Success message -->
+            <div class="success-message" id="successMessage">
+                <h3>Thank you!</h3>
+                <p>We'll notify you when we launch.</p>
+            </div>
+            
+            <!-- Error message -->
+            <div class="error-message" id="errorMessage">
+                <h3>Oops! Something went wrong.</h3>
+                <p>Please try again or contact us directly.</p>
+            </div>
         </div>
     </section>
 
