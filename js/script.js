@@ -16,8 +16,6 @@ async function handleSubmit(e) {
     e.preventDefault();
     const input = e.target.querySelector('.email-input');
     const email = input.value;
-    const button = e.target.querySelector('button[type="submit"]');
-    const originalText = button.textContent;
 
     if (!email) {
         alert('Please enter your email address');
@@ -32,22 +30,20 @@ async function handleSubmit(e) {
     }
 
     try {
-        // Show loading state
-        button.textContent = 'Saving...';
-        button.disabled = true;
-
         // REPLACE WITH YOUR ACTUAL WEB APP URL
         const webAppUrl = 'https://script.google.com/macros/s/AKfycbyUM5K8TRTWo6s20UO6yf7M8LIOgkQDr0YDTZ-zAACsIzdyYzrGVQ1xEpBFojhyJBwLjw/exec';
+        
+        // Use FormData instead of JSON (simpler approach)
+        const formData = new FormData();
+        formData.append('email', email);
 
         const response = await fetch(webAppUrl, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ email: email })
+            body: formData
         });
 
         const result = await response.json();
+        console.log('Server response:', result);
 
         if (result.result === 'success') {
             alert(`Thank you! We'll notify you at ${email} when we launch.`);
@@ -57,15 +53,10 @@ async function handleSubmit(e) {
         }
 
     } catch (error) {
-        console.error('Error saving email:', error);
-        alert('Sorry, there was an error saving your email. Please try again later.');
-    } finally {
-        // Reset button state
-        button.textContent = originalText;
-        button.disabled = false;
+        console.error('Error details:', error);
+        alert('Error: ' + error.message);
     }
 }
-
 // Carousel Items Dictionary - UPDATED PATHS
 const carouselItems = [
     { "image": "images/carousel/Male/1.png" },
