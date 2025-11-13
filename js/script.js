@@ -11,52 +11,204 @@ function createSnowflake() {
 setInterval(createSnowflake, 500);
 
 // Email Form Handler
-// Email Form Handler
-async function handleSubmit(e) {
-    e.preventDefault();
-    const input = e.target.querySelector('.email-input');
-    const email = input.value;
-
-    if (!email) {
-        alert('Please enter your email address');
+// Form submission handler
+document.getElementById('googleForm').addEventListener('submit', function(event) {
+    event.preventDefault();
+    
+    // Validate form before submission
+    if (!validateForm()) {
         return;
     }
-
-    // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
-        alert('Please enter a valid email address');
-        return;
-    }
-
-    try {
-        // REPLACE WITH YOUR ACTUAL WEB APP URL
-        const webAppUrl = 'https://script.google.com/macros/s/AKfycbyUM5K8TRTWo6s20UO6yf7M8LIOgkQDr0YDTZ-zAACsIzdyYzrGVQ1xEpBFojhyJBwLjw/exec';
+    
+    // Get form elements
+    const form = event.target;
+    const submitButton = form.querySelector('button[type="submit"]');
+    const loadingIndicator = document.getElementById('loading');
+    const successMessage = document.getElementById('successMessage');
+    const errorMessage = document.getElementById('errorMessage');
+    
+    // Hide any previous messages
+    successMessage.style.display = 'none';
+    errorMessage.style.display = 'none';
+    
+    // Show loading state
+    submitButton.disabled = true;
+    submitButton.textContent = 'Submitting...';
+    loadingIndicator.style.display = 'block';
+    
+    // Get form data
+    const formData = new FormData(form);
+    
+    // IMPORTANT: Replace with your actual Google Form submission URL
+    // Format: https://docs.google.com/forms/d/e/YOUR_FORM_ID_HERE/formResponse
+    const googleFormURL = 'https://docs.google.com/forms/d/e/1FAIpQLSchptoV6pNnZACo04lnJwVQAschgWWpMnnOTm-CDFHBkUv2TQ/formResponse';
+    
+    // Create URL parameters from form data
+    const urlParams = new URLSearchParams(formData);
+    
+    // Submit to Google Forms using fetch
+    fetch(googleFormURL, {
+        method: 'POST',
+        mode: 'no-cors', // Important: This prevents CORS issues
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: urlParams
+    })
+    .then(() => {
+        // Since we're using no-cors mode, we can't check the response status
+        // But we assume it was successful if we reach this point
         
-        // Use FormData instead of JSON (simpler approach)
-        const formData = new FormData();
-        formData.append('email', email);
+        // Hide loading indicator
+        loadingIndicator.style.display = 'none';
+        
+        // Show success message
+        successMessage.style.display = 'block';
+        
+        // Reset form
+        form.reset();
+        
+        // Reset button state after a short delay
+        setTimeout(() => {
+            submitButton.disabled = false;
+            submitButton.textContent = 'Notify Me';
+        }, 2000);
+    })
+    .catch(error => {
+        console.error('Error submitting form:', error);
+        
+        // Hide loading indicator
+        loadingIndicator.style.display = 'none';
+        
+        // Show error message
+        errorMessage.style.display = 'block';
+        
+        // Reset button state
+        submitButton.disabled = false;
+        submitButton.textContent = 'Notify Me';
+    });
+});
 
-        const response = await fetch(webAppUrl, {
-            method: 'POST',
-            body: formData
-        });
-
-        const result = await response.json();
-        console.log('Server response:', result);
-
-        if (result.result === 'success') {
-            alert(`Thank you! We'll notify you at ${email} when we launch.`);
-            input.value = '';
+// Form validation function
+function validateForm() {
+    let isValid = true;
+    
+    // Validate name
+    const nameInput = document.getElementById('name');
+    const nameValue = nameInput.value.trim();
+    if (nameValue === '') {
+        showValidationError(nameInput, 'Please enter your name');
+        isValid = false;
+    } else if (nameValue.length < 2) {
+        showValidationError(nameInput, 'Name must be at least 2 characters long');
+        isValid = false;
+    } else {
+        clearValidationError(nameInput);
+    }
+    
+    // Validate email
+    const emailInput = document.getElementById('email');
+    const emailValue = emailInput.value.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    if (emailValue === '') {
+        showValidationError(emailInput, 'Please enter your email address');
+        isValid = false;
+    } else if (!emailRegex.test(emailValue)) {
+        showValidationError(emailInput, 'Please enter a valid email address');
+        isValid = false;
+    } else {
+        clearValidationError(emailInput);
+    }
+    
+    // Validate phone (optional)
+    const phoneInput = document.getElementById('phone');
+    const phoneValue = phoneInput.value.trim();
+    
+    if (phoneValue !== '') {
+        const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/; // Basic international phone validation
+        if (!phoneRegex.test(phoneValue.replace(/[\s\-\(\)]/g, ''))) {
+            showValidationError(phoneInput, 'Please enter a valid phone number');
+            isValid = false;
         } else {
-            throw new Error(result.message);
+            clearValidationError(phoneInput);
         }
+    } else {
+        clearValidationError(phoneInput);
+    }
+    
+    return isValid;
+}
 
-    } catch (error) {
-        console.error('Error details:', error);
-        alert('Error: ' + error.message);
+// Show validation error
+function showValidationError(input, message) {
+    input.classList.add('invalid');
+    
+    // Find or create validation message element
+    let validationMessage = input.parentNode.querySelector('.validation-message');
+    if (!validationMessage) {
+        validationMessage = document.createElement('div');
+        validationMessage.className = 'validation-message';
+        input.parentNode.appendChild(validationMessage);
+    }
+    
+    validationMessage.textContent = message;
+    validationMessage.classList.add('invalid');
+}
+
+// Clear validation error
+function clearValidationError(input) {
+    input.classList.remove('invalid');
+    
+    const validationMessage = input.parentNode.querySelector('.validation-message');
+    if (validationMessage) {
+        validationMessage.classList.remove('invalid');
     }
 }
+
+// Real-time validation
+document.getElementById('name').addEventListener('blur', function() {
+    const value = this.value.trim();
+    if (value !== '' && value.length < 2) {
+        showValidationError(this, 'Name must be at least 2 characters long');
+    } else if (value !== '') {
+        clearValidationError(this);
+    }
+});
+
+document.getElementById('email').addEventListener('blur', function() {
+    const value = this.value.trim();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    
+    if (value !== '' && !emailRegex.test(value)) {
+        showValidationError(this, 'Please enter a valid email address');
+    } else if (value !== '') {
+        clearValidationError(this);
+    }
+});
+
+document.getElementById('phone').addEventListener('blur', function() {
+    const value = this.value.trim();
+    if (value !== '') {
+        const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+        if (!phoneRegex.test(value.replace(/[\s\-\(\)]/g, ''))) {
+            showValidationError(this, 'Please enter a valid phone number');
+        } else {
+            clearValidationError(this);
+        }
+    }
+});
+
+// Clear validation on input
+document.querySelectorAll('.email-input').forEach(input => {
+    input.addEventListener('input', function() {
+        if (this.classList.contains('invalid')) {
+            clearValidationError(this);
+        }
+    });
+});
+// Form Submission JS code ends here
+
 // Carousel Items Dictionary - UPDATED PATHS
 const carouselItems = [
     { "image": "images/carousel/Male/1.png" },
