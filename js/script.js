@@ -50,9 +50,13 @@ const carouselItems = [
     { "image": "images/carousel/Female/12.png" },
 ];
 
-// Function to create carousel items
+// Carousel functionality
+let isManualScrolling = false;
+let scrollTimeout;
+let carouselTrack;
+
 function createCarouselItems() {
-    const carouselTrack = document.getElementById('carouselTrack');
+    carouselTrack = document.getElementById('carouselTrack');
     
     // Clear existing content
     carouselTrack.innerHTML = '';
@@ -63,7 +67,7 @@ function createCarouselItems() {
         carouselItem.className = 'carousel-item';
         
         carouselItem.innerHTML = `
-            <img src="${item.image}" alt="Carousel Item" loading="lazy">
+            <img src="${item.image}" alt="Carousel Item">
             <div class="image-overlay">
                 <span class="overlay-text">Coming Soon</span>
             </div>
@@ -78,7 +82,7 @@ function createCarouselItems() {
         carouselItem.className = 'carousel-item';
         
         carouselItem.innerHTML = `
-            <img src="${item.image}" alt="Carousel Item" loading="lazy">
+            <img src="${item.image}" alt="Carousel Item">
             <div class="image-overlay">
                 <span class="overlay-text">Coming Soon</span>
             </div>
@@ -86,6 +90,66 @@ function createCarouselItems() {
         
         carouselTrack.appendChild(carouselItem);
     });
+    
+    // Add event listeners for manual scrolling
+    setupCarouselInteractions();
+}
+
+function setupCarouselInteractions() {
+    // Mouse down/touch start - switch to manual scroll
+    carouselTrack.addEventListener('mousedown', startManualScroll);
+    carouselTrack.addEventListener('touchstart', startManualScroll);
+    
+    // Mouse up/touch end - wait and then resume auto-scroll
+    carouselTrack.addEventListener('mouseup', endManualScroll);
+    carouselTrack.addEventListener('touchend', endManualScroll);
+    carouselTrack.addEventListener('mouseleave', endManualScroll);
+    
+    // Wheel event for mouse wheel scrolling
+    carouselTrack.addEventListener('wheel', handleWheel);
+}
+
+function startManualScroll() {
+    if (!isManualScrolling) {
+        isManualScrolling = true;
+        carouselTrack.classList.add('manual-scroll');
+        carouselTrack.classList.remove('paused');
+    }
+    
+    // Clear any existing timeout
+    clearTimeout(scrollTimeout);
+}
+
+function endManualScroll() {
+    if (isManualScrolling) {
+        scrollTimeout = setTimeout(() => {
+            isManualScrolling = false;
+            carouselTrack.classList.remove('manual-scroll');
+            // Restart animation from current position
+            const currentScroll = carouselTrack.scrollLeft;
+            carouselTrack.style.transform = `translateX(-${currentScroll}px)`;
+        }, 2000); // Wait 2 seconds after user stops scrolling
+    }
+}
+
+function handleWheel(e) {
+    if (!isManualScrolling) {
+        startManualScroll();
+    }
+    
+    // Prevent default vertical scrolling
+    e.preventDefault();
+    
+    // Scroll horizontally with wheel
+    carouselTrack.scrollLeft += e.deltaY;
+    
+    // Reset timeout on wheel activity
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(() => {
+        if (isManualScrolling) {
+            endManualScroll();
+        }
+    }, 2000);
 }
 
 // Video handling for hero section
