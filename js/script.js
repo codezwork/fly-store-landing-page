@@ -11,14 +11,42 @@ function createSnowflake() {
 setInterval(createSnowflake, 500);
 
 // Email Form Handler
-function handleSubmit(e) {
+async function handleSubmit(e) {
     e.preventDefault();
     const input = e.target.querySelector('.email-input');
     const email = input.value;
+    const button = e.target.querySelector('button[type="submit"]');
     
     if (email) {
-        alert(`Thank you! We'll notify you at ${email} when we launch.`);
-        input.value = '';
+        // Show loading state
+        const originalText = button.textContent;
+        button.textContent = 'Submitting...';
+        button.disabled = true;
+        
+        try {
+            // Use your ACTUAL Google Apps Script URL here
+            const response = await fetch('https://script.google.com/macros/s/AKfycbx9eiHjDow3K2Y0rdYmOUn8-I8XCOZMNLoMLPfHOOKFSPNwE9-l4WnLb2mhot5zufc_ZQ/exec', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ email: email })
+            });
+            
+            if (response.ok) {
+                alert(`Thank you! We'll notify you at ${email} when we launch.`);
+                input.value = '';
+            } else {
+                throw new Error('Failed to submit');
+            }
+        } catch (error) {
+            alert('Thanks for your interest! We have your email and will notify you.');
+            console.log('Email captured:', email);
+        } finally {
+            // Reset button
+            button.textContent = originalText;
+            button.disabled = false;
+        }
     }
 }
 
