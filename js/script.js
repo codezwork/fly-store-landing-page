@@ -11,51 +11,58 @@ function createSnowflake() {
 setInterval(createSnowflake, 500);
 
 // Email Form Handler
+// Email Form Handler
 async function handleSubmit(e) {
     e.preventDefault();
     const input = e.target.querySelector('.email-input');
     const email = input.value;
-    const button = e.target.querySelector('button[type="submit]');
-    
-    if (email) {
-        const originalText = button.textContent;
-        button.textContent = 'Submitting...';
+    const button = e.target.querySelector('button[type="submit"]');
+    const originalText = button.textContent;
+
+    if (!email) {
+        alert('Please enter your email address');
+        return;
+    }
+
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        alert('Please enter a valid email address');
+        return;
+    }
+
+    try {
+        // Show loading state
+        button.textContent = 'Saving...';
         button.disabled = true;
-        
-        try {
-            // Use your actual Google Apps Script URL
-            const scriptURL = 'https://script.google.com/macros/s/AKfycbyUM5K8TRTWo6s20UO6yf7M8LIOgkQDr0YDTZ-zAACsIzdyYzrGVQ1xEpBFojhyJBwLjw/exec';
-            
-            console.log('Sending request to:', scriptURL);
-            
-            const response = await fetch(scriptURL, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ email: email })
-            });
-            
-            console.log('Response status:', response.status);
-            
-            const result = await response.text();
-            console.log('Response text:', result);
-            
-            if (response.ok) {
-                alert(`Thank you! We'll notify you at ${email} when we launch.`);
-                input.value = '';
-            } else {
-                throw new Error(`Server responded with: ${response.status}`);
-            }
-        } catch (error) {
-            console.error('Full error:', error);
-            alert('Thanks for your interest! We have your email and will notify you.');
-            // Fallback: You can store emails locally as backup
-            localStorage.setItem('submitted_email', email);
-        } finally {
-            button.textContent = originalText;
-            button.disabled = false;
+
+        // REPLACE WITH YOUR ACTUAL WEB APP URL
+        const webAppUrl = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+
+        const response = await fetch(webAppUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email: email })
+        });
+
+        const result = await response.json();
+
+        if (result.result === 'success') {
+            alert(`Thank you! We'll notify you at ${email} when we launch.`);
+            input.value = '';
+        } else {
+            throw new Error(result.message);
         }
+
+    } catch (error) {
+        console.error('Error saving email:', error);
+        alert('Sorry, there was an error saving your email. Please try again later.');
+    } finally {
+        // Reset button state
+        button.textContent = originalText;
+        button.disabled = false;
     }
 }
 
