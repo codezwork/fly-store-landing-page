@@ -37,7 +37,7 @@ async function handleSubmit(e) {
         button.disabled = true;
 
         // REPLACE WITH YOUR ACTUAL WEB APP URL
-        const webAppUrl = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+        const webAppUrl = 'https://script.google.com/macros/s/AKfycbyUM5K8TRTWo6s20UO6yf7M8LIOgkQDr0YDTZ-zAACsIzdyYzrGVQ1xEpBFojhyJBwLjw/exec';
 
         const response = await fetch(webAppUrl, {
             method: 'POST',
