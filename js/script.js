@@ -15,17 +15,20 @@ async function handleSubmit(e) {
     e.preventDefault();
     const input = e.target.querySelector('.email-input');
     const email = input.value;
-    const button = e.target.querySelector('button[type="submit"]');
+    const button = e.target.querySelector('button[type="submit]');
     
     if (email) {
-        // Show loading state
         const originalText = button.textContent;
         button.textContent = 'Submitting...';
         button.disabled = true;
         
         try {
-            // Use your ACTUAL Google Apps Script URL here
-            const response = await fetch('https://script.google.com/macros/s/AKfycbx9eiHjDow3K2Y0rdYmOUn8-I8XCOZMNLoMLPfHOOKFSPNwE9-l4WnLb2mhot5zufc_ZQ/exec', {
+            // Use your actual Google Apps Script URL
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbyUM5K8TRTWo6s20UO6yf7M8LIOgkQDr0YDTZ-zAACsIzdyYzrGVQ1xEpBFojhyJBwLjw/exec';
+            
+            console.log('Sending request to:', scriptURL);
+            
+            const response = await fetch(scriptURL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -33,17 +36,23 @@ async function handleSubmit(e) {
                 body: JSON.stringify({ email: email })
             });
             
+            console.log('Response status:', response.status);
+            
+            const result = await response.text();
+            console.log('Response text:', result);
+            
             if (response.ok) {
                 alert(`Thank you! We'll notify you at ${email} when we launch.`);
                 input.value = '';
             } else {
-                throw new Error('Failed to submit');
+                throw new Error(`Server responded with: ${response.status}`);
             }
         } catch (error) {
+            console.error('Full error:', error);
             alert('Thanks for your interest! We have your email and will notify you.');
-            console.log('Email captured:', email);
+            // Fallback: You can store emails locally as backup
+            localStorage.setItem('submitted_email', email);
         } finally {
-            // Reset button
             button.textContent = originalText;
             button.disabled = false;
         }
