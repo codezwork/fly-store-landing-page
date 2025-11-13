@@ -221,12 +221,11 @@ nav a:hover {
     }
     
     .hero-video {
-        order: -1;
-        max-height: 350px;
+        display: none;
     }
     
     .hero-content {
-        padding: 0;
+        width: 100%;
     }
 }
 
