@@ -17,8 +17,13 @@ document.getElementById('googleForm').addEventListener('submit', function(event)
     
     // Validate form before submission
     if (!validateForm()) {
+        // Show temporary error message
+        showTempErrorMessage('Please fill in all required fields');
         return;
     }
+    
+    // Hide temporary error message if it was shown
+    hideTempErrorMessage();
     
     // Get form elements
     const form = event.target;
@@ -40,7 +45,6 @@ document.getElementById('googleForm').addEventListener('submit', function(event)
     const formData = new FormData(form);
     
     // IMPORTANT: Replace with your actual Google Form submission URL
-    // Format: https://docs.google.com/forms/d/e/YOUR_FORM_ID_HERE/formResponse
     const googleFormURL = 'https://docs.google.com/forms/d/e/1FAIpQLSchptoV6pNnZACo04lnJwVQAschgWWpMnnOTm-CDFHBkUv2TQ/formResponse';
     
     // Create URL parameters from form data
@@ -89,15 +93,15 @@ document.getElementById('googleForm').addEventListener('submit', function(event)
     });
 });
 
-// Form validation function
+// Form validation function - NOW CHECKS ALL THREE FIELDS ARE FILLED
 function validateForm() {
     let isValid = true;
     
-    // Validate name
+    // Validate name (required)
     const nameInput = document.getElementById('name');
     const nameValue = nameInput.value.trim();
     if (nameValue === '') {
-        showValidationError(nameInput, 'Please enter your name');
+        showValidationError(nameInput, 'Name is required');
         isValid = false;
     } else if (nameValue.length < 2) {
         showValidationError(nameInput, 'Name must be at least 2 characters long');
@@ -106,13 +110,13 @@ function validateForm() {
         clearValidationError(nameInput);
     }
     
-    // Validate email
+    // Validate email (required)
     const emailInput = document.getElementById('email');
     const emailValue = emailInput.value.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     
     if (emailValue === '') {
-        showValidationError(emailInput, 'Please enter your email address');
+        showValidationError(emailInput, 'Email is required');
         isValid = false;
     } else if (!emailRegex.test(emailValue)) {
         showValidationError(emailInput, 'Please enter a valid email address');
@@ -121,20 +125,21 @@ function validateForm() {
         clearValidationError(emailInput);
     }
     
-    // Validate phone (optional)
+    // Validate phone (NOW REQUIRED)
     const phoneInput = document.getElementById('phone');
     const phoneValue = phoneInput.value.trim();
     
-    if (phoneValue !== '') {
-        const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/; // Basic international phone validation
+    if (phoneValue === '') {
+        showValidationError(phoneInput, 'Phone number is required');
+        isValid = false;
+    } else {
+        const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
         if (!phoneRegex.test(phoneValue.replace(/[\s\-\(\)]/g, ''))) {
             showValidationError(phoneInput, 'Please enter a valid phone number');
             isValid = false;
         } else {
             clearValidationError(phoneInput);
         }
-    } else {
-        clearValidationError(phoneInput);
     }
     
     return isValid;
@@ -166,12 +171,43 @@ function clearValidationError(input) {
     }
 }
 
-// Real-time validation
+// Show temporary error message
+function showTempErrorMessage(message) {
+    let tempError = document.getElementById('tempErrorMessage');
+    if (!tempError) {
+        tempError = document.createElement('div');
+        tempError.id = 'tempErrorMessage';
+        tempError.className = 'temp-error-message';
+        // Insert after the form
+        const form = document.getElementById('googleForm');
+        form.parentNode.insertBefore(tempError, form.nextSibling);
+    }
+    
+    tempError.textContent = message;
+    tempError.style.display = 'block';
+    
+    // Auto-hide after 5 seconds
+    setTimeout(() => {
+        hideTempErrorMessage();
+    }, 5000);
+}
+
+// Hide temporary error message
+function hideTempErrorMessage() {
+    const tempError = document.getElementById('tempErrorMessage');
+    if (tempError) {
+        tempError.style.display = 'none';
+    }
+}
+
+// Real-time validation for all three fields
 document.getElementById('name').addEventListener('blur', function() {
     const value = this.value.trim();
-    if (value !== '' && value.length < 2) {
+    if (value === '') {
+        showValidationError(this, 'Name is required');
+    } else if (value.length < 2) {
         showValidationError(this, 'Name must be at least 2 characters long');
-    } else if (value !== '') {
+    } else {
         clearValidationError(this);
     }
 });
@@ -180,16 +216,20 @@ document.getElementById('email').addEventListener('blur', function() {
     const value = this.value.trim();
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     
-    if (value !== '' && !emailRegex.test(value)) {
+    if (value === '') {
+        showValidationError(this, 'Email is required');
+    } else if (!emailRegex.test(value)) {
         showValidationError(this, 'Please enter a valid email address');
-    } else if (value !== '') {
+    } else {
         clearValidationError(this);
     }
 });
 
 document.getElementById('phone').addEventListener('blur', function() {
     const value = this.value.trim();
-    if (value !== '') {
+    if (value === '') {
+        showValidationError(this, 'Phone number is required');
+    } else {
         const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
         if (!phoneRegex.test(value.replace(/[\s\-\(\)]/g, ''))) {
             showValidationError(this, 'Please enter a valid phone number');
@@ -199,12 +239,14 @@ document.getElementById('phone').addEventListener('blur', function() {
     }
 });
 
-// Clear validation on input
+// Clear validation on input and hide temp error
 document.querySelectorAll('.email-input').forEach(input => {
     input.addEventListener('input', function() {
         if (this.classList.contains('invalid')) {
             clearValidationError(this);
         }
+        // Hide temporary error message when user starts typing
+        hideTempErrorMessage();
     });
 });
 // Form Submission JS code ends here
