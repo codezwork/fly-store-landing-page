@@ -218,7 +218,7 @@ header.scrolled {
     border-radius: 20px;
     background-color: transparent;
     text-decoration: none;
-    font-weight: 600;
+    font-weight: 300;
     font-size: 1rem;
     transition: all 0.3s ease;
     cursor: pointer;
@@ -251,6 +251,51 @@ header.scrolled {
     }
 }
 /* Header Section Ends Here */
+
+/* Mobile Promo Banner */
+.mobile-promo-banner {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    text-align: center;
+    padding: 2ren 2rem;
+    margin-top: 12px;
+}
+
+.mobile-promo-button {
+    color: #000000;
+    letter-spacing: 0.3px;
+    font-size: 0.9rem;
+    padding: 0.7rem 1.5rem;
+    border: 1.5px solid #101010;
+    border-radius: 20px;
+    background-color: transparent;
+    text-decoration: none;
+    font-weight: 300;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+/* Show only on mobile and tablet */
+@media (max-width: 1024px) {
+    .mobile-promo-banner {
+        display: block;
+    }
+}
+
+/* Optional: Adjust for very small screens */
+@media (max-width: 480px) {
+    .mobile-promo-banner {
+        padding: 0.7rem 1rem;
+    }
+    
+    .mobile-promo-banner span {
+        font-size: 0.85rem;
+    }
+}
+/* Mobile Promo Section Ends Here*/
 
 /* Hero Section */
 /* Hero Section - Two Column Layout */
