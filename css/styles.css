@@ -209,14 +209,19 @@ header.scrolled {
     padding: 0 2rem;
 }
 
-.promo-message span {
+.promo-button {
     color: #101010;
     font-size: 0.9rem;
     font-weight: 500;
-    padding: 0.4rem 1.2rem;
+    padding: 0.7rem 1.5rem;
     border: 1.5px solid #101010;
     border-radius: 20px;
     background-color: transparent;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
 }
 
 /* Gentle pulse animation for attention */
