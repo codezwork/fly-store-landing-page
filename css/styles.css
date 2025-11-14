@@ -199,6 +199,54 @@ header.scrolled {
         padding: 0.6rem 5%;
     }
 }
+/* Promotional Message */
+.promo-message {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+    text-align: center;
+    padding: 0 2rem;
+}
+
+.promo-message span {
+    color: #101010;
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.4rem 1.2rem;
+    border: 1.5px solid #101010;
+    border-radius: 20px;
+    background-color: transparent;
+}
+
+/* Gentle pulse animation for attention */
+@keyframes pulse-gentle {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 rgba(16, 16, 16, 0.4);
+    }
+    50% {
+        transform: scale(1.02);
+        box-shadow: 0 0 0 rgba(16, 16, 16, 0.7);
+    }
+}
+
+/* Hide promo message on mobile and tablet */
+@media (max-width: 1024px) {
+    .promo-message {
+        display: none;
+    }
+}
+
+/* Optional: Adjust header layout for very large screens */
+@media (min-width: 1400px) {
+    .promo-message span {
+        font-size: 0.9rem;
+        padding: 0.6rem 1.8rem;
+    }
+}
+/* Header Section Ends Here */
+
 /* Hero Section */
 /* Hero Section - Two Column Layout */
 .hero {
