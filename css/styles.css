@@ -698,6 +698,28 @@ header.scrolled {
     border-color: #f44336;
     background-color: #ffebee;
 }
+
+.validation-message {
+    display: none;
+    color: #f44336;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    text-align: left;
+    padding: 0 0.25rem;
+}
+
+/* Temporary error message */
+.temp-error-message {
+    display: none;
+    background-color: #ffebee;
+    color: #c62828;
+    padding: 1rem;
+    border-radius: 6px;
+    margin-top: 1rem;
+    text-align: center;
+    border-left: 4px solid #f44336;
+    font-weight: 500;
+}
 /* Email Form CSS Ends here*/
 
 /* Footer */
