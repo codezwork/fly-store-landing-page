@@ -260,7 +260,7 @@ header.scrolled {
     flex-grow: 1;
     text-align: center;
     padding: 2ren 2rem;
-    margin-top: 12px;
+    margin-top: 0.5rem;
 }
 
 .mobile-promo-button {
